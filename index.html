@@ -434,28 +434,68 @@ function nextQuestion(){
  else calculateResults();
 }
 function previousQuestion(){if(currentStep>0){currentStep--;renderQuestion()}}
-function calculateResults(){
- lastResults=careers.map(c=>{
-  let score=0;
-  answers.subjects.forEach(s=>{if(c.subjects.includes(s))score+=3});
-  answers.interests.forEach(s=>{if(c.interests.includes(s))score+=4});
-  answers.skills.forEach(s=>{if(c.skills.includes(s))score+=2});
-  const activityMap={
-   "Building things":["Creating","Technology"],
-   "Solving puzzles":["Problem Solving"],
-   "Conducting experiments":["Research"],
-   "Designing things":["Creating"],
-   "Helping others":["Helping People"],
-   "Analysing information":["Research","Problem Solving"],
-   "Starting a business":["Managing","Creating"]
-  };
-  answers.activities.forEach(a=>{
-    (activityMap[a]||[]).forEach(i=>{if(c.interests.includes(i))score+=2});
-  });
-  return {...c,score};
- }).sort((a,b)=>b.score-a.score).slice(0,8);
- showResults();
+
+async function calculateResults(){
+
+  const area = document.getElementById("resultsArea");
+  area.innerHTML = '<div class="panel">Finding your career matches...</div>';
+  showPage("results");
+
+  try {
+    const response = await fetch(
+      "https://careerai-backend-1d4m.onrender.com/recommend",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          interests: answers.interests,
+          subjects: answers.subjects,
+          skills: answers.skills
+        })
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Recommendation service unavailable");
+    }
+
+    const data = await response.json();
+
+    const aliases = {
+      "software developer": "Software Engineer"
+    };
+
+    lastResults = data.recommendations
+      .filter(item => item.score > 0)
+      .map(item => {
+        const name = aliases[item.name.toLowerCase()] || item.name;
+
+        const localCareer = careers.find(
+          c => c.name.toLowerCase() === name.toLowerCase()
+        );
+
+        return localCareer
+          ? { ...localCareer, score: item.score }
+          : null;
+      })
+      .filter(Boolean);
+
+    if (!lastResults.length) {
+      throw new Error("No matching careers found");
+    }
+
+    showResults();
+
+  } catch (error) {
+
+    alert("Could not get recommendations from the backend. Please try again.");
+
+    showPage("discover");
+  }
 }
+
 function showResults(){
  const area=document.getElementById("resultsArea");
  area.innerHTML="";
