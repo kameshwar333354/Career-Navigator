@@ -1,0 +1,553 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0b0b18">
+<title>CareerAI Navigator | Discover Your Future</title>
+<style>
+:root {
+  --bg:#0b0b18;
+  --panel:#151529;
+  --panel2:#1d1d37;
+  --purple:#8b72ff;
+  --blue:#5b9cff;
+  --text:#f5f4ff;
+  --muted:#aaa9c3;
+  --border:#30304c;
+  --green:#43d6a0;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;background:var(--bg);color:var(--text);
+  font-family:Inter,system-ui,-apple-system,sans-serif;
+}
+button,input,select{font:inherit}
+button{cursor:pointer}
+.navbar{
+  height:72px;display:flex;align-items:center;
+  justify-content:space-between;padding:0 6%;
+  border-bottom:1px solid var(--border);
+  background:rgba(11,11,24,.95);
+  position:sticky;top:0;z-index:10;
+}
+.logo{font-size:20px;font-weight:800;letter-spacing:-.7px}
+.logo span{color:var(--purple)}
+.logo-icon{
+  display:inline-grid;place-items:center;
+  background:#30275d;width:35px;height:35px;
+  border-radius:11px;margin-right:8px;
+}
+.navlinks{display:flex;gap:24px;align-items:center}
+.navlinks a{color:var(--muted);text-decoration:none;font-size:14px}
+.navlinks a:hover{color:white}
+.container{width:min(1120px,90%);margin:auto}
+.hero{
+  padding:95px 0 75px;text-align:center;
+  background:radial-gradient(ellipse at 50% 0%,#35265d 0%,#151329 35%,var(--bg) 75%);
+}
+.tag{
+  display:inline-block;border:1px solid #51428a;
+  background:#211b3c;color:#c8baff;
+  padding:8px 15px;border-radius:30px;font-size:12px;
+}
+.hero h1{
+  font-size:clamp(38px,7vw,70px);
+  line-height:1.08;letter-spacing:-3px;
+  max-width:850px;margin:25px auto 18px;
+}
+.gradient{
+  background:linear-gradient(90deg,#aa91ff,#65b5ff);
+  -webkit-background-clip:text;background-clip:text;
+  color:transparent;
+}
+.hero p{
+  max-width:620px;margin:0 auto 30px;
+  color:var(--muted);line-height:1.8;
+}
+.btn{
+  border:0;border-radius:11px;padding:13px 21px;
+  background:linear-gradient(110deg,#8467f5,#547df5);
+  color:white;font-weight:700;transition:.2s;
+}
+.btn:hover{filter:brightness(1.15);transform:translateY(-2px)}
+.btn.secondary{
+  background:var(--panel2);border:1px solid var(--border);
+}
+.btn.small{padding:9px 13px;font-size:13px}
+.stats{
+  display:flex;justify-content:center;gap:50px;
+  margin-top:45px;flex-wrap:wrap;
+}
+.stat strong{display:block;font-size:23px}
+.stat span{font-size:12px;color:var(--muted)}
+.section{padding:65px 0}
+.section-title{text-align:center;margin-bottom:35px}
+.section-title h2{font-size:32px;margin:0 0 10px}
+.section-title p{color:var(--muted);font-size:14px}
+.grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:17px;
+}
+.card{
+  background:var(--panel);border:1px solid var(--border);
+  padding:22px;border-radius:17px;
+}
+.card:hover{border-color:#7763c9}
+.icon{
+  width:48px;height:48px;border-radius:14px;
+  background:#292044;display:grid;place-items:center;
+  font-size:24px;margin-bottom:15px;
+}
+.card h3{margin:0 0 9px;font-size:17px}
+.card p{color:var(--muted);font-size:13px;line-height:1.7}
+.card button{margin-top:10px}
+.hidden{display:none!important}
+.page{min-height:65vh;padding:48px 0 80px}
+.page-heading{margin-bottom:30px}
+.page-heading h1{font-size:34px;margin:0 0 10px}
+.page-heading p{color:var(--muted);line-height:1.7}
+.panel{
+  background:var(--panel);border:1px solid var(--border);
+  padding:25px;border-radius:17px;margin-bottom:20px;
+}
+.field{margin:20px 0}
+.field label{display:block;font-weight:650;margin-bottom:12px}
+.options{display:flex;gap:9px;flex-wrap:wrap}
+.option{
+  border:1px solid var(--border);background:var(--panel2);
+  color:var(--muted);padding:11px 15px;border-radius:10px;
+}
+.option.selected{
+  color:white;background:#382b68;border-color:var(--purple);
+}
+.actions{display:flex;justify-content:space-between;gap:10px;margin-top:25px}
+.progress{height:6px;background:#292940;border-radius:20px;margin:15px 0 28px}
+.progress div{height:100%;background:var(--purple);border-radius:20px;width:0%;transition:.2s}
+.result-card{margin-bottom:14px}
+.result-top{display:flex;justify-content:space-between;gap:12px;align-items:center}
+.match{
+  color:var(--green);background:#163d36;padding:7px 11px;
+  border-radius:20px;font-size:12px;font-weight:700;
+}
+.pill{
+  display:inline-block;background:#28213f;color:#c6b9ff;
+  border-radius:20px;padding:6px 10px;font-size:11px;margin:4px 3px 4px 0;
+}
+.muted{color:var(--muted);font-size:13px;line-height:1.7}
+.career-detail h2{font-size:30px}
+.career-detail h3{margin-top:25px}
+.roadmap-item{
+  border-left:2px solid var(--purple);padding:3px 0 20px 20px;
+  margin-left:8px;position:relative;
+}
+.roadmap-item:before{
+  content:"";position:absolute;left:-7px;top:5px;
+  width:12px;height:12px;background:var(--purple);border-radius:50%;
+}
+.roadmap-item p{color:var(--muted);font-size:13px}
+.chatbox{
+  height:360px;overflow:auto;background:#101020;
+  border:1px solid var(--border);padding:15px;border-radius:13px;
+}
+.message{
+  padding:11px 14px;border-radius:12px;margin:10px 0;
+  max-width:85%;font-size:13px;line-height:1.6;
+  white-space:pre-wrap;
+}
+.bot{background:#24213c}
+.user{background:#42336f;margin-left:auto}
+.chat-input{display:flex;gap:9px;margin-top:12px}
+.chat-input input{
+  flex:1;min-width:0;background:var(--panel2);
+  color:white;border:1px solid var(--border);
+  border-radius:10px;padding:13px;
+}
+footer{
+  border-top:1px solid var(--border);padding:30px 5%;
+  text-align:center;color:var(--muted);font-size:12px;
+}
+.empty{text-align:center;padding:45px 15px;color:var(--muted)}
+.mobile-menu{display:none}
+@media(max-width:750px){
+  .grid{grid-template-columns:1fr}
+  .navlinks{display:none}
+  .hero{padding:70px 0 55px}
+  .hero h1{letter-spacing:-1.5px}
+  .stats{gap:24px}
+  .panel{padding:17px}
+  .result-top{align-items:flex-start}
+}
+</style>
+</head>
+<body>
+
+<header class="navbar">
+  <div class="logo">
+    <span class="logo-icon">✦</span>Career<span>AI</span>
+  </div>
+  <nav class="navlinks">
+    <a href="#" onclick="showPage('home')">Home</a>
+    <a href="#" onclick="showPage('discover')">Discover</a>
+    <a href="#" onclick="showPage('careers')">Careers</a>
+    <a href="#" onclick="showPage('saved')">Saved</a>
+    <a href="#" onclick="showPage('assistant')">Assistant</a>
+  </nav>
+  <button class="btn small" onclick="showPage('discover')">Get Started →</button>
+</header>
+
+<main>
+<!-- HOME -->
+<section id="home" class="screen">
+  <div class="hero">
+    <div class="container">
+      <span class="tag">✦ YOUR FUTURE, YOUR CHOICE</span>
+      <h1>Discover a career that matches <span class="gradient">your potential.</span></h1>
+      <p>
+        Explore career possibilities, understand your strengths,
+        and build a personalised learning roadmap.
+        Your journey to the future starts here.
+      </p>
+      <button class="btn" onclick="startTest()">Discover My Career →</button>
+      <button class="btn secondary" onclick="showPage('careers')">Explore Careers</button>
+      <div class="stats">
+        <div class="stat"><strong>20+</strong><span>Career paths</span></div>
+        <div class="stat"><strong>5</strong><span>Interest areas</span></div>
+        <div class="stat"><strong>1</strong><span>Personal roadmap</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="section container">
+    <div class="section-title">
+      <h2>Everything you need to plan ahead</h2>
+      <p>Explore your future with simple career guidance tools.</p>
+    </div>
+    <div class="grid">
+      <div class="card"><div class="icon">🧭</div><h3>Career Discovery</h3><p>Answer a few questions about your interests and discover possible career paths.</p></div>
+      <div class="card"><div class="icon">🚀</div><h3>Learning Roadmaps</h3><p>Understand which skills, subjects and projects can help you get started.</p></div>
+      <div class="card"><div class="icon">💡</div><h3>Career Explorer</h3><p>Explore different professions, qualifications and required skills.</p></div>
+      <div class="card"><div class="icon">📊</div><h3>Skill Analysis</h3><p>Compare your current skills with the skills needed for a career.</p></div>
+      <div class="card"><div class="icon">🤖</div><h3>Career Assistant</h3><p>Ask questions and get starter guidance about different career paths.</p></div>
+      <div class="card"><div class="icon">⭐</div><h3>Saved Careers</h3><p>Save interesting career options and revisit them anytime on this device.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- DISCOVER -->
+<section id="discover" class="screen hidden">
+  <div class="page container">
+    <div class="page-heading">
+      <span class="tag">CAREER DISCOVERY</span>
+      <h1>Let's discover your interests.</h1>
+      <p>Choose the options that describe you best. There are no right or wrong answers.</p>
+    </div>
+    <div class="panel">
+      <div id="stepLabel" class="muted">Question 1 of 5</div>
+      <div class="progress"><div id="progressBar"></div></div>
+      <div id="questionArea"></div>
+      <div class="actions">
+        <button class="btn secondary" id="backBtn" onclick="previousQuestion()">← Back</button>
+        <button class="btn" id="nextBtn" onclick="nextQuestion()">Next →</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RESULTS -->
+<section id="results" class="screen hidden">
+  <div class="page container">
+    <div class="page-heading">
+      <span class="tag">YOUR DISCOVERY RESULTS</span>
+      <h1>Career paths to explore.</h1>
+      <p>These are suggestions based on your selected interests, not predictions or guaranteed career matches.</p>
+    </div>
+    <div id="resultsArea"></div>
+    <button class="btn secondary" onclick="startTest()">Retake test</button>
+  </div>
+</section>
+
+<!-- CAREERS -->
+<section id="careers" class="screen hidden">
+  <div class="page container">
+    <div class="page-heading">
+      <span class="tag">CAREER LIBRARY</span>
+      <h1>Explore career possibilities.</h1>
+      <p>Learn about different fields and what they involve.</p>
+    </div>
+    <div class="panel">
+      <input id="searchCareer" placeholder="Search careers..." oninput="renderCareers()"
+       style="width:100%;padding:14px;background:#20203a;color:white;border:1px solid #393953;border-radius:10px">
+    </div>
+    <div id="careerLibrary" class="grid"></div>
+  </div>
+</section>
+
+<!-- CAREER DETAILS -->
+<section id="details" class="screen hidden">
+  <div class="page container">
+    <button class="btn secondary small" onclick="showPage('careers')">← Back to careers</button>
+    <div id="detailsArea" class="panel career-detail" style="margin-top:20px"></div>
+  </div>
+</section>
+
+<!-- ROADMAP -->
+<section id="roadmap" class="screen hidden">
+  <div class="page container">
+    <div class="page-heading">
+      <span class="tag">YOUR LEARNING PLAN</span>
+      <h1>Career learning roadmap</h1>
+      <p>Use these milestones as a starting point. Adjust them to your education level and interests.</p>
+    </div>
+    <div id="roadmapArea" class="panel"></div>
+  </div>
+</section>
+
+<!-- SAVED -->
+<section id="saved" class="screen hidden">
+  <div class="page container">
+    <div class="page-heading">
+      <span class="tag">YOUR COLLECTION</span>
+      <h1>Saved careers</h1>
+      <p>Your favourite careers are stored in this browser.</p>
+    </div>
+    <div id="savedArea"></div>
+  </div>
+</section>
+
+<!-- ASSISTANT -->
+<section id="assistant" class="screen hidden">
+  <div class="page container">
+    <div class="page-heading">
+      <span class="tag">CAREER ASSISTANT</span>
+      <h1>What would you like to explore?</h1>
+      <p>This first version uses a simple built-in guidance system. A real AI API will be connected in a later version.</p>
+    </div>
+    <div class="panel">
+      <div class="chatbox" id="chatbox">
+        <div class="message bot">Hello! I'm your Career Navigator assistant. Ask me about careers, skills, education or learning roadmaps.</div>
+      </div>
+      <div class="chat-input">
+        <input id="chatInput" placeholder="Ask a career question..." onkeydown="if(event.key==='Enter')sendMessage()">
+        <button class="btn" onclick="sendMessage()">Send</button>
+      </div>
+    </div>
+    <p class="muted">Please verify important education and career decisions with trusted sources and qualified guidance.</p>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="logo">Career<span>AI</span></div>
+  <p>Explore possibilities. Build skills. Shape your future.</p>
+  <p>© <span id="year"></span> CareerAI Navigator. Educational guidance platform.</p>
+  <p>Career suggestions are exploratory, not guarantees of suitability or employment.</p>
+</footer>
+
+<script>
+const careers = [
+ {id:1,name:"Software Engineer",icon:"💻",category:"Technology",subjects:["Mathematics","Computer Science"],interests:["Technology","Problem Solving","Creating"],skills:["Programming","Logical Thinking","Problem Solving"],desc:"Design, build, test and maintain software applications and digital systems.",roadmap:["Learn computer and programming basics","Learn Python or JavaScript","Study data structures and algorithms","Build small practical projects","Explore software development and teamwork"]},
+ {id:2,name:"Data Scientist",icon:"📊",category:"Technology",subjects:["Mathematics","Statistics","Computer Science"],interests:["Technology","Research","Problem Solving"],skills:["Python","Statistics","Data Analysis"],desc:"Use data, mathematics and programming to discover patterns and help answer questions.",roadmap:["Build mathematics foundations","Learn Python","Study statistics and data analysis","Practise with real datasets","Create data analysis projects"]},
+ {id:3,name:"AI / ML Engineer",icon:"🤖",category:"Technology",subjects:["Mathematics","Computer Science","Physics"],interests:["Technology","Research","Problem Solving"],skills:["Python","Linear Algebra","Machine Learning"],desc:"Develop systems that learn from data and perform tasks such as classification and prediction.",roadmap:["Learn Python programming","Strengthen algebra and statistics","Study machine learning foundations","Explore neural networks","Build responsible AI projects"]},
+ {id:4,name:"Robotics Engineer",icon:"🦾",category:"Engineering",subjects:["Physics","Mathematics","Computer Science"],interests:["Technology","Creating","Problem Solving"],skills:["Electronics","Programming","Physics"],desc:"Work with robots, sensors, electronics and automated systems.",roadmap:["Study mathematics and physics","Learn basic electronics","Learn programming","Explore robotics kits and simulation","Build small robotics projects"]},
+ {id:5,name:"Mechanical Engineer",icon:"⚙️",category:"Engineering",subjects:["Physics","Mathematics"],interests:["Creating","Problem Solving","Technology"],skills:["Mechanics","Design","Mathematics"],desc:"Design and improve machines, mechanical systems and products.",roadmap:["Build physics and mathematics foundations","Study mechanics","Learn engineering drawing and CAD","Explore materials and manufacturing","Complete design projects"]},
+ {id:6,name:"Electrical Engineer",icon:"⚡",category:"Engineering",subjects:["Physics","Mathematics"],interests:["Technology","Creating","Problem Solving"],skills:["Electronics","Circuit Design","Mathematics"],desc:"Design and work with electrical systems, circuits and power technologies.",roadmap:["Learn electricity and magnetism","Study circuit fundamentals","Learn electronics","Explore control systems","Build safe electronics projects"]},
+ {id:7,name:"Civil Engineer",icon:"🏗️",category:"Engineering",subjects:["Physics","Mathematics"],interests:["Creating","Problem Solving"],skills:["Structural Design","Mathematics","Planning"],desc:"Plan, design and help construct infrastructure such as buildings, roads and bridges.",roadmap:["Study mathematics and physics","Explore engineering drawing","Learn structural fundamentals","Study materials and construction","Explore supervised design projects"]},
+ {id:8,name:"Doctor",icon:"🩺",category:"Healthcare",subjects:["Biology","Chemistry","Physics"],interests:["Helping People","Research"],skills:["Communication","Scientific Thinking","Empathy"],desc:"Diagnose, treat and help prevent illnesses after completing the required medical education and training.",roadmap:["Build biology and chemistry foundations","Research medical admission requirements","Complete the required medical degree","Complete supervised clinical training","Pursue an area of medical practice"]},
+ {id:9,name:"Biotechnologist",icon:"🧬",category:"Science",subjects:["Biology","Chemistry"],interests:["Research","Technology","Helping People"],skills:["Biology","Laboratory Skills","Research"],desc:"Apply biological science and technology in areas such as medicine, agriculture and research.",roadmap:["Study biology and chemistry","Learn laboratory fundamentals","Explore genetics and biotechnology","Complete science projects","Explore relevant degree programmes"]},
+ {id:10,name:"Research Scientist",icon:"🔬",category:"Science",subjects:["Physics","Chemistry","Biology","Mathematics"],interests:["Research","Problem Solving"],skills:["Scientific Method","Analysis","Communication"],desc:"Investigate questions, conduct experiments and develop scientific knowledge.",roadmap:["Develop strong subject foundations","Learn scientific research methods","Practise data collection and analysis","Explore university research areas","Gain research experience"]},
+ {id:11,name:"Cybersecurity Analyst",icon:"🔐",category:"Technology",subjects:["Mathematics","Computer Science"],interests:["Technology","Problem Solving"],skills:["Networking","Security Concepts","Analytical Thinking"],desc:"Help organisations protect computer systems, networks and information.",roadmap:["Learn computer fundamentals","Study networking basics","Learn operating system concepts","Study defensive security principles","Practise in legal learning environments"]},
+ {id:12,name:"UI/UX Designer",icon:"🎨",category:"Design",subjects:["Art","Computer Science"],interests:["Creating","Helping People"],skills:["Design","Creativity","Communication"],desc:"Design digital experiences that are useful, accessible and easy to understand.",roadmap:["Study design fundamentals","Learn user research","Explore wireframes and prototypes","Learn a design tool","Build a portfolio of projects"]},
+ {id:13,name:"Architect",icon:"🏛️",category:"Design",subjects:["Mathematics","Art","Physics"],interests:["Creating","Problem Solving"],skills:["Design","Spatial Thinking","Planning"],desc:"Plan and design buildings and spaces with attention to function, safety and appearance.",roadmap:["Explore architecture and design","Build drawing and spatial skills","Research degree and licensing requirements","Learn design tools","Develop a design portfolio"]},
+ {id:14,name:"Economist",icon:"📈",category:"Business",subjects:["Mathematics","Economics"],interests:["Research","Problem Solving"],skills:["Economics","Statistics","Analysis"],desc:"Study how people, businesses and governments make economic decisions.",roadmap:["Build mathematics foundations","Learn economics basics","Study statistics","Practise analysing economic data","Explore economics degree programmes"]},
+ {id:15,name:"Entrepreneur",icon:"🚀",category:"Business",subjects:["Mathematics","Economics","Business"],interests:["Creating","Managing","Helping People"],skills:["Communication","Planning","Problem Solving"],desc:"Identify problems, develop ideas and build organisations or products.",roadmap:["Observe real-world problems","Learn business basics","Research customers and markets","Test a small idea responsibly","Learn budgeting and teamwork"]},
+ {id:16,name:"Chartered Accountant",icon:"🧾",category:"Business",subjects:["Mathematics","Economics","Business"],interests:["Problem Solving","Managing"],skills:["Accounting","Attention to Detail","Analysis"],desc:"Work with financial reporting, accounting, auditing and taxation after the required professional qualifications.",roadmap:["Learn accounting fundamentals","Explore professional qualification requirements","Study finance and taxation","Practise financial analysis","Complete required professional training"]},
+ {id:17,name:"Lawyer",icon:"⚖️",category:"Law",subjects:["English","History","Economics"],interests:["Helping People","Research","Communication"],skills:["Reasoning","Research","Communication"],desc:"Research legal issues, interpret laws and represent or advise clients after qualifying.",roadmap:["Develop reading and writing skills","Explore legal systems","Research recognised law courses","Study legal reasoning","Complete required legal qualifications"]},
+ {id:18,name:"Psychologist",icon:"🧠",category:"Healthcare",subjects:["Biology","Psychology"],interests:["Research","Helping People"],skills:["Listening","Research","Communication"],desc:"Study behaviour and mental processes. Professional practice requires the relevant qualifications and licensing rules.",roadmap:["Explore psychology fundamentals","Study research methods","Research accredited programmes","Pursue relevant higher education","Meet local professional requirements"]},
+ {id:19,name:"Teacher / Educator",icon:"📚",category:"Education",subjects:["English","Mathematics","Biology"],interests:["Helping People","Communication"],skills:["Communication","Subject Knowledge","Planning"],desc:"Help learners understand subjects and develop knowledge and skills.",roadmap:["Develop subject knowledge","Practise explaining concepts","Explore teaching qualifications","Gain supervised teaching experience","Develop lesson planning skills"]},
+ {id:20,name:"Environmental Scientist",icon:"🌱",category:"Science",subjects:["Biology","Chemistry","Geography"],interests:["Research","Helping People"],skills:["Research","Data Analysis","Scientific Thinking"],desc:"Study environmental systems and investigate issues such as pollution and conservation.",roadmap:["Study biology and earth science","Learn research methods","Explore environmental data","Study relevant degree programmes","Participate in supervised projects"]}
+];
+
+const questions = [
+ {title:"Which subjects do you enjoy most?",sub:"Select all that apply.",key:"subjects",options:["Mathematics","Physics","Chemistry","Biology","Computer Science","Economics","Art","English","History","Psychology","Business","Geography"]},
+ {title:"What interests you the most?",sub:"Select up to three options.",key:"interests",limit:3,options:["Technology","Research","Creating","Problem Solving","Helping People","Managing","Communication"]},
+ {title:"Which activities sound interesting?",sub:"Choose up to three.",key:"activities",limit:3,options:["Building things","Solving puzzles","Conducting experiments","Designing things","Helping others","Analysing information","Starting a business"]},
+ {title:"Which skills do you enjoy using?",sub:"Select the skills you recognise in yourself.",key:"skills",options:["Logical Thinking","Creativity","Communication","Mathematics","Programming","Research","Planning","Design"]},
+ {title:"What is your current education level?",sub:"Choose one.",key:"level",single:true,options:["Class 9","Class 10","Class 11","Class 12","College","Graduate","Other"]}
+];
+
+let answers={subjects:[],interests:[],activities:[],skills:[],level:[]};
+let currentStep=0;
+let currentCareer=null;
+let lastResults=[];
+let saved=JSON.parse(localStorage.getItem("careerai_saved")||"[]");
+
+function showPage(id){
+ document.querySelectorAll(".screen").forEach(s=>s.classList.add("hidden"));
+ document.getElementById(id).classList.remove("hidden");
+ window.scrollTo({top:0,behavior:"smooth"});
+ if(id==="careers")renderCareers();
+ if(id==="saved")renderSaved();
+}
+function startTest(){
+ answers={subjects:[],interests:[],activities:[],skills:[],level:[]};
+ currentStep=0;renderQuestion();showPage("discover");
+}
+function renderQuestion(){
+ const q=questions[currentStep];
+ document.getElementById("stepLabel").textContent=`Question ${currentStep+1} of ${questions.length}`;
+ document.getElementById("progressBar").style.width=((currentStep+1)/questions.length*100)+"%";
+ document.getElementById("questionArea").innerHTML=
+ `<h2>${q.title}</h2><p class="muted">${q.sub}</p><div class="options" id="questionOptions"></div>`;
+ const box=document.getElementById("questionOptions");
+ q.options.forEach(opt=>{
+  const b=document.createElement("button");
+  b.className="option"+(answers[q.key].includes(opt)?" selected":"");
+  b.textContent=opt;
+  b.onclick=()=>selectOption(opt);
+  box.appendChild(b);
+ });
+ document.getElementById("backBtn").style.visibility=currentStep===0?"hidden":"visible";
+ document.getElementById("nextBtn").textContent=currentStep===questions.length-1?"See My Results →":"Next →";
+}
+function selectOption(opt){
+ const q=questions[currentStep];
+ let a=answers[q.key];
+ if(q.single){answers[q.key]=[opt]}
+ else if(a.includes(opt)){answers[q.key]=a.filter(x=>x!==opt)}
+ else if(q.limit&&a.length>=q.limit){alert("Please select up to "+q.limit+" options.");return}
+ else{answers[q.key]=[...a,opt]}
+ renderQuestion();
+}
+function nextQuestion(){
+ if(!answers[questions[currentStep].key].length){
+  alert("Please select at least one option.");return;
+ }
+ if(currentStep<questions.length-1){currentStep++;renderQuestion()}
+ else calculateResults();
+}
+function previousQuestion(){if(currentStep>0){currentStep--;renderQuestion()}}
+function calculateResults(){
+ lastResults=careers.map(c=>{
+  let score=0;
+  answers.subjects.forEach(s=>{if(c.subjects.includes(s))score+=3});
+  answers.interests.forEach(s=>{if(c.interests.includes(s))score+=4});
+  answers.skills.forEach(s=>{if(c.skills.includes(s))score+=2});
+  const activityMap={
+   "Building things":["Creating","Technology"],
+   "Solving puzzles":["Problem Solving"],
+   "Conducting experiments":["Research"],
+   "Designing things":["Creating"],
+   "Helping others":["Helping People"],
+   "Analysing information":["Research","Problem Solving"],
+   "Starting a business":["Managing","Creating"]
+  };
+  answers.activities.forEach(a=>{
+    (activityMap[a]||[]).forEach(i=>{if(c.interests.includes(i))score+=2});
+  });
+  return {...c,score};
+ }).sort((a,b)=>b.score-a.score).slice(0,8);
+ showResults();
+}
+function showResults(){
+ const area=document.getElementById("resultsArea");
+ area.innerHTML="";
+ lastResults.forEach((c,i)=>{
+  const div=document.createElement("div");
+  div.className="panel result-card";
+  div.innerHTML=`
+   <div class="result-top">
+    <div><div class="icon">${c.icon}</div><h2>${i+1}. ${c.name}</h2></div>
+    <span class="match">Explore match</span>
+   </div>
+   <p class="muted">${c.desc}</p>
+   <div>${c.skills.map(s=>`<span class="pill">${s}</span>`).join("")}</div>
+   <div class="actions">
+    <button class="btn secondary small" onclick="toggleSave(${c.id})">☆ Save</button>
+    <button class="btn small" onclick="openCareer(${c.id})">Explore career →</button>
+   </div>`;
+  area.appendChild(div);
+ });
+ area.innerHTML+='<p class="muted">The order is based on a simple rule-based matching score, not a validated psychological assessment. Explore several careers and consider your own preferences.</p>';
+ showPage("results");
+}
+function renderCareers(){
+ const query=(document.getElementById("searchCareer")?.value||"").toLowerCase();
+ const area=document.getElementById("careerLibrary");
+ area.innerHTML="";
+ const filtered=careers.filter(c=>(c.name+" "+c.category+" "+c.desc).toLowerCase().includes(query));
+ filtered.forEach(c=>{
+  const d=document.createElement("div");d.className="card";
+  d.innerHTML=`<div class="icon">${c.icon}</div><span class="pill">${c.category}</span><h3>${c.name}</h3><p>${c.desc}</p><button class="btn small" onclick="openCareer(${c.id})">Explore →</button>`;
+  area.appendChild(d);
+ });
+ if(!filtered.length)area.innerHTML='<div class="empty">No careers found. Try another search.</div>';
+}
+function openCareer(id){
+ const c=careers.find(x=>x.id===id);if(!c)return;
+ currentCareer=c;
+ document.getElementById("detailsArea").innerHTML=`
+  <div class="icon">${c.icon}</div><span class="pill">${c.category}</span>
+  <h2>${c.name}</h2><p class="muted">${c.desc}</p>
+  <h3>Important subjects</h3><div>${c.subjects.map(s=>`<span class="pill">${s}</span>`).join("")}</div>
+  <h3>Skills to develop</h3><div>${c.skills.map(s=>`<span class="pill">${s}</span>`).join("")}</div>
+  <h3>What can you explore?</h3><p class="muted">${c.name} can involve different roles and specialisations depending on your education, location and interests. Research local qualification requirements.</p>
+  <div class="actions">
+   <button class="btn secondary" onclick="toggleSave(${c.id})">☆ Save career</button>
+   <button class="btn" onclick="openRoadmap(${c.id})">View roadmap →</button>
+  </div>`;
+ showPage("details");
+}
+function openRoadmap(id){
+ const c=careers.find(x=>x.id===id);if(!c)return;
+ document.getElementById("roadmapArea").innerHTML=`
+  <div class="icon">${c.icon}</div><h2>${c.name}</h2>
+  <p class="muted">A beginner-friendly suggested roadmap. Adjust the pace to your circumstances.</p>
+  ${c.roadmap.map((s,i)=>`<div class="roadmap-item"><strong>Step ${i+1}: ${s}</strong><p>Learn the fundamentals, practise and explore trusted learning resources.</p></div>`).join("")}
+  <p class="muted">This is a general learning suggestion, not a guaranteed route into employment.</p>`;
+ showPage("roadmap");
+}
+function toggleSave(id){
+ if(saved.includes(id))saved=saved.filter(x=>x!==id);
+ else saved.push(id);
+ localStorage.setItem("careerai_saved",JSON.stringify(saved));
+ if(!document.getElementById("saved").classList.contains("hidden"))renderSaved();
+}
+function renderSaved(){
+ const area=document.getElementById("savedArea");area.innerHTML="";
+ const list=careers.filter(c=>saved.includes(c.id));
+ if(!list.length){area.innerHTML='<div class="empty">⭐ No saved careers yet. Explore the career library and save your favourites.</div>';return}
+ list.forEach(c=>{
+  const d=document.createElement("div");d.className="panel";
+  d.innerHTML=`<div class="result-top"><h3>${c.icon} ${c.name}</h3><button class="btn secondary small" onclick="toggleSave(${c.id})">Remove</button></div><p class="muted">${c.desc}</p><button class="btn small" onclick="openCareer(${c.id})">View career</button>`;
+  area.appendChild(d);
+ });
+}
+function sendMessage(){
+ const input=document.getElementById("chatInput");
+ const text=input.value.trim();if(!text)return;
+ addMessage(text,"user");input.value="";
+ setTimeout(()=>addMessage(getReply(text),"bot"),250);
+}
+function addMessage(text,type){
+ const box=document.getElementById("chatbox");
+ const d=document.createElement("div");d.className="message "+type;
+ d.textContent=text;box.appendChild(d);box.scrollTop=box.scrollHeight;
+}
+function getReply(q){
+ const t=q.toLowerCase();
+ const found=careers.find(c=>t.includes(c.name.toLowerCase()));
+ if(found)return `${found.name}\n\n${found.desc}\n\nSubjects: ${found.subjects.join(", ")}\n\nSkills: ${found.skills.join(", ")}\n\nOpen the Careers section to see its suggested roadmap.`;
+ if(t.includes("engineer")||t.includes("coding")||t.includes("programming"))return "Technology careers you can explore include Software Engineer, AI/ML Engineer, Data Scientist and Cybersecurity Analyst. Start by exploring mathematics, programming and problem solving.";
+ if(t.includes("doctor")||t.includes("medical")||t.includes("biology"))return "Healthcare and life-science options include Doctor, Psychologist and Biotechnologist. Research the recognised qualifications and admission requirements in your country.";
+ if(t.includes("salary")||t.includes("earning")||t.includes("income"))return "Salary depends on country, qualifications, experience, industry and employer. Check reliable local labour-market sources rather than relying on one general estimate.";
+ if(t.includes("roadmap")||t.includes("learn"))return "Choose a career from the Careers section and open its roadmap. Start with fundamentals, practise regularly and build small projects where appropriate.";
+ if(t.includes("math"))return "Mathematics is useful in many areas, including engineering, computer science, economics, statistics and data science. The amount needed differs between careers.";
+ if(t.includes("class")||t.includes("school")||t.includes("student"))return "At school level, explore subjects, try small projects and learn about different careers. You do not need to decide your entire future immediately.";
+ return "I can help you explore career fields, subjects, qualifications, skills and learning paths. Try asking: 'How do I become a software engineer?' or 'Which careers use biology?' This is a starter assistant, not a live AI model.";
+}
+document.getElementById("year").textContent=new Date().getFullYear();
+renderCareers();
+</script>
+</body>
+</html>
