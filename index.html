@@ -336,7 +336,9 @@ footer{
   </div>
 </section>
 </main>
-
+<p style="margin-top:18px;color:#aaa9c3">
+  Built with ❤️ by <strong style="color:#aa91ff">Ansh Kumar</strong>
+</p>
 <footer>
   <div class="logo">Career<span>AI</span></div>
   <p>Explore possibilities. Build skills. Shape your future.</p>
@@ -523,12 +525,50 @@ function renderSaved(){
   area.appendChild(d);
  });
 }
-function sendMessage(){
- const input=document.getElementById("chatInput");
- const text=input.value.trim();if(!text)return;
- addMessage(text,"user");input.value="";
- setTimeout(()=>addMessage(getReply(text),"bot"),250);
+
+async function sendMessage(){
+  const input = document.getElementById("chatInput");
+  const text = input.value.trim();
+
+  if(!text) return;
+
+  addMessage(text, "user");
+  input.value = "";
+
+  addMessage("Thinking...", "bot");
+
+  const box = document.getElementById("chatbox");
+  const thinking = box.lastElementChild;
+
+  try {
+    const response = await fetch(
+      "https://careerai-backend-1d4m.onrender.com/ask",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          message: text
+        })
+      }
+    );
+
+    if(!response.ok) {
+      throw new Error("Server error");
+    }
+
+    const data = await response.json();
+
+    thinking.textContent =
+      data.answer || data.error || "No answer received.";
+
+  } catch(error) {
+    thinking.textContent =
+      "Connection problem. Please try again.";
+  }
 }
+
 function addMessage(text,type){
  const box=document.getElementById("chatbox");
  const d=document.createElement("div");d.className="message "+type;
