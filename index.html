@@ -518,18 +518,107 @@ function showResults(){
  area.innerHTML+='<p class="muted">The order is based on a simple rule-based matching score, not a validated psychological assessment. Explore several careers and consider your own preferences.</p>';
  showPage("results");
 }
-function renderCareers(){
- const query=(document.getElementById("searchCareer")?.value||"").toLowerCase();
- const area=document.getElementById("careerLibrary");
- area.innerHTML="";
- const filtered=careers.filter(c=>(c.name+" "+c.category+" "+c.desc).toLowerCase().includes(query));
- filtered.forEach(c=>{
-  const d=document.createElement("div");d.className="card";
-  d.innerHTML=`<div class="icon">${c.icon}</div><span class="pill">${c.category}</span><h3>${c.name}</h3><p>${c.desc}</p><button class="btn small" onclick="openCareer(${c.id})">Explore →</button>`;
-  area.appendChild(d);
- });
- if(!filtered.length)area.innerHTML='<div class="empty">No careers found. Try another search.</div>';
+
+async function renderCareers(){
+  const query = (document.getElementById("searchCareer")?.value || "").toLowerCase();
+  const area = document.getElementById("careerLibrary");
+
+  area.innerHTML = '<div class="empty">Loading careers...</div>';
+
+  let loadMessage = "";
+
+  try {
+    if (!renderCareers.loadPromise) {
+      renderCareers.loadPromise = fetch(
+        "https://careerai-backend-1d4m.onrender.com/careers"
+      )
+      .then(async response => {
+        if (!response.ok) throw new Error("API error");
+
+        const data = await response.json();
+        if (!Array.isArray(data.careers)) {
+          throw new Error("Invalid career data");
+        }
+
+        const aliases = {
+          "software developer": "Software Engineer"
+        };
+
+        const icons = {
+          "Graphic Designer": "🎨"
+        };
+
+        data.careers.forEach((item, index) => {
+          const name = aliases[item.name.toLowerCase()] || item.name;
+
+          const existing = careers.find(
+            c => c.name.toLowerCase() === name.toLowerCase()
+          );
+
+          const updated = {
+            category: item.category,
+            interests: item.interests,
+            subjects: item.subjects,
+            skills: item.skills,
+            desc: item.description,
+            roadmap: item.roadmap
+          };
+
+          if (existing) {
+            Object.assign(existing, updated);
+          } else {
+            careers.push({
+              id: 1000 + index,
+              name: item.name,
+              icon: icons[item.name] || "✨",
+              ...updated
+            });
+          }
+        });
+      })
+      .catch(error => {
+        renderCareers.loadPromise = null;
+        throw error;
+      });
+    }
+
+    await renderCareers.loadPromise;
+
+  } catch (error) {
+    loadMessage =
+      '<p class="muted">Using locally saved career information. Backend connection unavailable.</p>';
+  }
+
+  area.innerHTML = loadMessage;
+
+  const filtered = careers.filter(c =>
+    (c.name + " " + c.category + " " + c.desc)
+      .toLowerCase()
+      .includes(query)
+  );
+
+  filtered.forEach(c => {
+    const d = document.createElement("div");
+    d.className = "card";
+
+    d.innerHTML = `
+      <div class="icon">${c.icon}</div>
+      <span class="pill">${c.category}</span>
+      <h3>${c.name}</h3>
+      <p>${c.desc}</p>
+      <button class="btn small"
+        onclick="openCareer(${c.id})">Explore →</button>
+    `;
+
+    area.appendChild(d);
+  });
+
+  if (!filtered.length) {
+    area.innerHTML +=
+      '<div class="empty">No careers found. Try another search.</div>';
+  }
 }
+
 function openCareer(id){
  const c=careers.find(x=>x.id===id);if(!c)return;
  currentCareer=c;
